@@ -1,2 +1,2 @@
 require('dotenv').config();
-console.log(process.end.API_KEY);
+textBlock.textContent = process.env.API_KEY;
