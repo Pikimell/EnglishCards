@@ -1,3 +1,19 @@
-@import './common';
+@import './base/common';
+@import "~bootstrap/scss/bootstrap";
+
+@import "./utils/variables";
+
+@import "./layout/find-block";
+@import "./layout/question";
+@import "./layout/modal";
 
 
+body> .base-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100vw;
+    height: 100vh;
+    background-color: $modal-bg-color;
+    padding: 0 2vh;
+}
