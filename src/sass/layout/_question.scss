@@ -1,7 +1,7 @@
 @import '../utils/components';
 
 .question-container{
-    background-color: $primary-bg-color;
+    background-color: #e0e5ec;
     width: 60vw;
     height: 80vh;
     padding: 50px;
@@ -18,7 +18,7 @@
     & .question-title{
         padding: 15px;
         box-sizing: border-box;
-        width: auto;
+        width: 100%;
         height: 112px;
         background: #FFBD5C;
         box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -28,15 +28,97 @@
     & .question-answer{
         width: 100%;
         background-color: #fff;
-        border: 1px solid tomato;
+    
         border-radius: 10px;
-        margin: 10px 0;
+        margin: 20px 0;
         padding: 10px;
-        height: 150px;
+        height: 120px;
+
+        box-shadow:
+   -7px -7px 20px 0px transparent,
+   -4px -4px 5px 0px transparent,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001,
+   inset 0px 0px 0px 0px transparent,
+   inset 0px 0px 0px 0px #0001,
+   inset 0px 0px 0px 0px transparent,        
+   inset 0px 0px 0px 0px #0001;
+
         cursor: pointer;
 
         &.selected{
-            border: 2px solid black;
+            box-shadow:none;
+            background: rgb(244, 244, 244);
+        }
+
+        &.wrong{
+            border: 2px solid tomato;
+        }
+
+        &.right{
+            border: 2px solid rgb(51, 191, 56);
         }
     }
+
+    & .question-footer{
+        margin-top: 25px;
+        padding: 0 15px;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100px;
+        border-radius: 15px;
+
+
+    }
+}
+
+
+.frame{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+   box-shadow:
+   -7px -7px 20px 0px #fff9,
+   -4px -4px 5px 0px #fff9,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001,
+   inset 0px 0px 0px 0px #fff9,
+   inset 0px 0px 0px 0px #0001,
+   inset 0px 0px 0px 0px #fff9,        
+   inset 0px 0px 0px 0px #0001;
+ transition:box-shadow 0.6s cubic-bezier(.79,.21,.06,.81);
+}
+  
+.my-btn{
+  height: 50px;
+  padding: 0 10px;
+  min-width: 150px;
+  width: fit-content;
+  border-radius: 25px;
+  background: #e0e5ec;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+   -7px -7px 20px 0px #fff9,
+   -4px -4px 5px 0px #fff9,
+   7px 7px 20px 0px #0002,
+   4px 4px 5px 0px #0001;
+ transition:box-shadow 0.6s cubic-bezier(.79,.21,.06,.81);
+  font-size: 26px;
+  color: #666;
+  text-decoration: none;
+  border: none;
+}
+
+.my-btn:active{
+  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+              -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+    inset -4px -4px 6px 0 rgba(255,255,255,.5),
+    inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
 }

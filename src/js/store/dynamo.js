@@ -3,7 +3,7 @@ import { ACCESS_KEY, SECRET_ACCESS_KEY } from '../consts';
 
 let awsConfig = {
   region: 'us-east-2',
-  endpoint: 'http://dynamodb.us-east-2.amazonaws.com',
+  endpoint: 'https://dynamodb.us-east-2.amazonaws.com',
   accessKeyId: ACCESS_KEY,
   secretAccessKey: SECRET_ACCESS_KEY,
 };
