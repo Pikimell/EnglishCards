@@ -150,3 +150,5 @@ function showAnswer(index) {
     }
   }
 }
+
+import './js/modal';

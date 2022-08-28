@@ -5,6 +5,7 @@ export let Users = new Map();
 
 export async function loadData() {
   myData = await dynamoGet('1');
+  localStorage.setItem('questions', JSON.stringify(myData));
   return myData;
 }
 
