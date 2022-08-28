@@ -40,13 +40,36 @@ function onTopicClick(event) {
   nextBtn.disabled = false;
   indexQuestion = 0;
   indexTopic = event.target.dataset.id;
+  resetStyle();
   if (event.target.nodeName === 'LI') loadQuestion();
 }
 function onFormSubmit(event) {
   event.preventDefault();
+  let selected = refs.formQuestion.elements['radio-group'].value;
+  selected = selected.length > 0 ? +selected : -1;
+  if (selected != -1) {
+    showAnswer(selected);
+  }
 }
-function onPrevBtnClick(event) {}
-function onNextBtnClick(event) {}
+
+function onPrevBtnClick(event) {
+  resetStyle();
+  if (indexQuestion > 0) {
+    indexQuestion--;
+    loadQuestion();
+  } else if (indexQuestion == 0) {
+    prevBtn.disabled = true;
+  }
+}
+function onNextBtnClick(event) {
+  resetStyle();
+  let topic = dictionary.get([...dictionary.keys()][indexTopic]);
+  if (indexQuestion < topic.length - 1) {
+    indexQuestion++;
+    loadQuestion();
+  }
+  prevBtn.disabled = false;
+}
 function onFormClick(event) {
   let target = event.target;
   let name = target.nodeName;
@@ -104,4 +127,26 @@ function selectAnswer(index) {
   }
   refs.answerListElem[index].closest('p').classList.add('selected');
   refs.answerListElem[index].previousElementSibling.checked = true;
+}
+
+function resetStyle() {
+  for (let i = 0; i < 3; i++) {
+    refs.answerListElem[i].closest('p').classList.remove('selected');
+    refs.answerListElem[i].closest('p').classList.remove('wrong');
+    refs.answerListElem[i].closest('p').classList.remove('right');
+    refs.answerListElem[i].previousElementSibling.checked = false;
+  }
+}
+
+function showAnswer(index) {
+  refs.answerListElem[index].closest('p').classList.add('wrong');
+  let topic = dictionary.get([...dictionary.keys()][indexTopic]);
+  let question = topic[indexQuestion];
+
+  for (let i = 0; i < 3; i++) {
+    if (refs.answerListElem[i].textContent === question.rus) {
+      refs.answerListElem[i].closest('p').classList.remove('wrong');
+      refs.answerListElem[i].closest('p').classList.add('right');
+    }
+  }
 }
