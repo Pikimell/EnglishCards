@@ -41,3 +41,18 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+
+.flex-gorizont{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.flex-vartical{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
