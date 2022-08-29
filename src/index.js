@@ -91,7 +91,7 @@ function onFormClick(event) {
 
 function onInputChange(event) {
   let text = event.target.value;
-  filteredList = [...dictionary.keys()]
+  let filteredList = [...dictionary.keys()]
     .map((value, index) => {
       return { value, index };
     })
