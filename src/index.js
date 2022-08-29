@@ -20,9 +20,11 @@ window.addEventListener('load', async () => {
   }
 
   loadTopicList(
-    [...dictionary.keys()].map((value, index) => {
-      return { value, index };
-    })
+    [...dictionary.keys()]
+      .sort((a, b) => a.localeCompare(b))
+      .map((value, index) => {
+        return { value, index };
+      })
   );
 });
 
