@@ -4,7 +4,6 @@ import { myData, saveData } from './store/index';
 
 // ==============================================
 const inputModule = document.querySelector('.js-input-module');
-const inputQuestion = document.querySelector('.js-input-question');
 const backdropModal = document.querySelector('.js-backdrop-modal');
 const buttons = document.querySelectorAll('.js-modal-btn');
 const questionButtons = document.querySelectorAll('.js-quest-btn');
@@ -126,7 +125,6 @@ function loadDetails(event) {
     textListElem[0].value = eng;
     textListElem[1].value = rus;
     textListElem[2].value = trans ?? '';
-    inputQuestion.value = index;
   }
 }
 

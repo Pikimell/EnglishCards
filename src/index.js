@@ -11,6 +11,13 @@ const refs = {
 let dictionary = new Map();
 let indexQuestion = 0;
 let indexTopic = 0;
+const langs = {
+  ENG: 'eng',
+  RUS: 'rus',
+};
+
+let BASE_LANG = langs.ENG;
+let SECOND_LANG = langs.RUS;
 
 window.addEventListener('load', async () => {
   await loadData();
@@ -105,11 +112,11 @@ function loadQuestion() {
   for (let i = 0; i < 3; i++) {
     let rand = getRand([indexQuestion, ...randomNums], 0, topic.length - 1);
     randomNums.push(rand);
-    refs.answerListElem[i].textContent = topic[randomNums[i]].rus;
+    refs.answerListElem[i].textContent = topic[randomNums[i]][SECOND_LANG];
   }
 
-  refs.answerListElem[answerRand].textContent = question.rus;
-  questionTitle.textContent = question.eng;
+  refs.answerListElem[answerRand].textContent = question[SECOND_LANG];
+  questionTitle.textContent = question[BASE_LANG];
 }
 
 function getRand(non, min, max) {
@@ -154,5 +161,8 @@ function showAnswer(index) {
     }
   }
 }
+toggle.addEventListener('change', e => {
+  [BASE_LANG, SECOND_LANG] = [SECOND_LANG, BASE_LANG];
+});
 
 import './js/modal';
