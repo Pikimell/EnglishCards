@@ -10,6 +10,5 @@ export async function loadData() {
 }
 
 export async function saveData() {
-  console.log('Save Data');
   dynamoUpdate('1', myData);
 }

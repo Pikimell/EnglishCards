@@ -141,9 +141,7 @@ questionButtons[2].addEventListener('click', createQuestion);
 function deleteQuestion(e) {
   e.preventDefault();
   clearQuestion();
-  console.log(questionsList[selectedModule]);
   questionsList[selectedModule].splice(selectedQuestion, 1);
-  console.log(questionsList[selectedModule]);
   localSaveData();
   loadData();
 }

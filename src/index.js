@@ -1,6 +1,5 @@
 import { loadData, myData } from './js/store/index';
 import questionListTemplate from './templates/question-list.hbs';
-import answerListTemplate from './templates/question-list.hbs';
 
 const refs = {
   questionList: document.querySelector('.list-topic'),
@@ -115,9 +114,12 @@ function loadQuestion() {
 
 function getRand(non, min, max) {
   let rand = -1;
-
+  let counter = 0;
   while (rand === -1 || non.includes(rand)) {
     rand = Math.floor(Math.random() * max) + min;
+    if (counter++ === 4999) {
+      return 0;
+    }
   }
 
   return rand;
