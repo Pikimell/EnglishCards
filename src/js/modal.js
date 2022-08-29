@@ -1,3 +1,7 @@
+// =============================================
+import { myData, saveData } from './store/index';
+// =============================================
+
 // ==============================================
 const inputModule = document.querySelector('.js-input-module');
 const inputQuestion = document.querySelector('.js-input-question');
@@ -31,6 +35,17 @@ function closeBackdropModal() {
   if (event.target === event.currentTarget) {
     document.body.classList.remove('show');
     backdropModal.removeEventListener('click', closeBackdropModal);
+    let copyMyData = JSON.parse(localStorage.getItem('questions'));
+
+    for (const key of Object.keys(myData)) {
+      delete myData[key];
+    }
+
+    for (const key of Object.keys(copyMyData)) {
+      myData[key] = copyMyData[key];
+    }
+
+    saveData();
   }
 }
 
@@ -40,11 +55,11 @@ buttons[2].addEventListener('click', createModule);
 
 function deleteModule() {
   inputModule.value = '';
-  console.log('DELETE:', selectedModule);
   delete questionsList[selectedModule];
-  saveData();
-  loadData();
   listQuestionModal.textContent = '';
+  selectedModule = '';
+  localSaveData();
+  loadData();
 }
 function saveModule() {
   let textModule = inputModule.value;
@@ -56,7 +71,7 @@ function saveModule() {
       ? [...questionsList[textModule], ...data]
       : data;
 
-  saveData();
+  localSaveData();
   loadData();
   listQuestionModal.textContent = '';
 }
@@ -65,7 +80,7 @@ function createModule() {
   selectedModule = '';
   if (!questionsList[textModule]) questionsList[textModule] = [];
 
-  saveData();
+  localSaveData();
   loadData();
   inputModule.value = '';
   listQuestionModal.textContent = '';
@@ -74,10 +89,15 @@ function createModule() {
 function loadData() {
   questionsList = JSON.parse(localStorage.getItem('questions'));
   listModuleModal.innerHTML = Object.keys(questionsList)
+    .sort((a, b) => a.localeCompare(b))
     .map(val => {
       return `<li>${val}</li>`;
     })
     .join('');
+
+  if (selectedModule.length > 0) {
+    selectModule(selectedModule);
+  }
 }
 
 listModuleModal.addEventListener('click', event => {
@@ -103,15 +123,14 @@ function loadDetails(event) {
     selectedQuestion = index - 1;
     let quest = questionsList[selectedModule][+index - 1];
     const { rus, eng, trans } = quest;
-
-    textListElem[0].textContent = eng;
-    textListElem[1].textContent = rus;
-    textListElem[2].textContent = trans ?? '';
+    textListElem[0].value = eng;
+    textListElem[1].value = rus;
+    textListElem[2].value = trans ?? '';
     inputQuestion.value = index;
   }
 }
 
-function saveData() {
+function localSaveData() {
   localStorage.setItem('questions', JSON.stringify(questionsList));
 }
 
@@ -122,20 +141,46 @@ questionButtons[2].addEventListener('click', createQuestion);
 function deleteQuestion(e) {
   e.preventDefault();
   clearQuestion();
-  questionsList[selectModule] = questionsList[selectModule].splice(
-    selectedQuestion,
-    1
-  );
-  saveData();
+  console.log(questionsList[selectedModule]);
+  questionsList[selectedModule].splice(selectedQuestion, 1);
+  console.log(questionsList[selectedModule]);
+  localSaveData();
   loadData();
 }
 
-function saveQuestion() {}
+function saveQuestion(e) {
+  e.preventDefault();
+  if (selectedQuestion >= 0) {
+    questionsList[selectedModule][selectedQuestion].eng = textListElem[0].value;
+    questionsList[selectedModule][selectedQuestion].rus = textListElem[1].value;
+    questionsList[selectedModule][selectedQuestion].trans =
+      textListElem[2].value;
+    clearQuestion();
+    localSaveData();
+    loadData();
+    selectedQuestion = -1;
+  }
+}
 
-function createQuestion() {}
+function createQuestion(e) {
+  e.preventDefault();
+  if (true) {
+    let quest = {
+      eng: textListElem[0].value,
+      rus: textListElem[1].value,
+      trans: textListElem[2].value,
+    };
+
+    questionsList[selectedModule].push(quest);
+    clearQuestion();
+    localSaveData();
+    loadData();
+    selectedQuestion = -1;
+  }
+}
 
 function clearQuestion() {
-  document.querySelector('.content-modal').elements[0].value = '';
-  document.querySelector('.content-modal').elements[1].value = '';
-  document.querySelector('.content-modal').elements[2].value = '';
+  textListElem[0].value = '';
+  textListElem[1].value = '';
+  textListElem[2].value = '';
 }
