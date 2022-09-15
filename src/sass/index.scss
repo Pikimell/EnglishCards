@@ -3,10 +3,13 @@
 @import "~bootstrap/scss/bootstrap";
 
 @import "./utils/variables";
+@import "./utils/components";
 
 @import "./layout/question.scss";
 @import "./layout/modal";
 @import "./layout/find-block";
+
+
 
 body {
     overflow: hidden;
