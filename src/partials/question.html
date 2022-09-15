@@ -1,24 +1,44 @@
 <div class="question-container">
+    <div class="question-header">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </div>
+
     <form class="question-back js-form-question">
-        <input type="checkbox" id="toggle" checked>
-        <h3 class="question-title" id="questionTitle"></h3>
+        <h3 class="question-title" id="questionTitle">TESTTESTTEST</h3>
         <p class="question-answer" data-index="0">
             <input type="radio" id="answer_1" name="radio-group" value="0">
-            <label for="answer_1"></label>
+            <label for="answer_1">TEST</label>
         </p>
         <p class="question-answer" data-index="1">
             <input type="radio" id="answer_2" name="radio-group" value="1">
-            <label for="answer_2"></label>
+            <label for="answer_2">TEST</label>
         </p>
         <p class="question-answer"  data-index="2">
             <input type="radio" id="answer_3" name="radio-group" value="2">
-            <label for="answer_3"></label>
+            <label for="answer_3">TEST</label>
         </p>   
-
-        <div class="question-footer frame">
-            <input type="button" value="Prev" class="my-btn" id="prevBtn" disabled>
-            <input type="submit" value="Ответить" class="my-btn" id="answerBtn" disabled>
-            <input type="button" value="Next" class="my-btn" id="nextBtn" disabled>
-        </div>
     </form>
+
+    <div class="question-footer frame">
+        <label clas="name-label">
+            <object data="./assets/arrow-left.svg" width="20" height="20"> </object>
+            <input type="button" class="my-btn" id="prevBtn" disabled>
+        </label>
+
+        <input type="submit" value="Ответить" class="my-btn" id="answerBtn" disabled>
+
+        <label clas="name-label">
+            <object data="./assets/arrow-right.svg" width="20" height="20"> </object>
+            <input type="button"class="my-btn" id="nextBtn" disabled>
+        </label>
+    </div>
 </div>

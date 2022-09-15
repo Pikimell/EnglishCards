@@ -56,3 +56,20 @@ table {
 	justify-content: space-evenly;
 	align-items: center;
 }
+
+
+
+*::-webkit-scrollbar {
+	width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+	-webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+	background-color: rgba(226, 230, 252, 1);
+	border-radius: 10px;
+}
+  
+*::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background: rgba(159, 170, 226, 1);
+}
