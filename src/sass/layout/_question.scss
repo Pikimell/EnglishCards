@@ -86,14 +86,18 @@
     }
 
     & .question-back{
-        //background-color: black;
-        margin:100px;
         width:100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+
         color: $hint-color;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 22px;
 
         &>:nth-child(1){
             color: $dark-color;
