@@ -37,6 +37,8 @@ function renderCategories(filterCategories) {
   if (!filterCategories) filterCategories = CATEGORIES;
   moduleRefs.moduleContainer = filterCategories;
 }
+
+function renderPhrases() {}
 // =============================================================
 //
 //
