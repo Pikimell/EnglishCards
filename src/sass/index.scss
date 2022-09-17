@@ -1,21 +1,41 @@
 @import './base/common';
+@import './base/fonts';
 @import "~bootstrap/scss/bootstrap";
 
 @import "./utils/variables";
+@import "./utils/components";
 
-@import "./layout/find-block";
-@import "./layout/question";
+@import "./layout/question.scss";
 @import "./layout/modal";
+@import "./layout/find-block";
 
 
+
+body {
+    overflow: hidden;
+    background-color: $primary-background;
+    background:$background-gradient;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 body> .base-container{
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    width: 100vw;
-    height: 100vh;
-    background-color: $modal-bg-color;
-    padding: 0 2vh;
+    justify-content: space-between;
+    width: 80vw;
+    height: 80vh;
+    min-width: 1100px;
+    max-width: 1300px;
+    padding: 0;
+    background: #ffffff6c;
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
 }
 
 .base-card{
@@ -28,4 +48,8 @@ body> .base-container{
      inset 0px 0px 0px 0px #0001,
      inset 0px 0px 0px 0px #fff9,        
      inset 0px 0px 0px 0px #0001;
+}
+
+* {
+    font-family: $my-font !important;
 }
