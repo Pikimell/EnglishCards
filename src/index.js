@@ -24,8 +24,8 @@ let CATEGORIES = [];
 let PHRASES = [];
 let CURRENT_INDEX_PHRASES;
 let CURRENT_INDEX_CATEGORY;
-let BASE_LANG = 'eng';
-let SECOND_LANG = 'rus';
+let BASE_LANG = 'rus';
+let SECOND_LANG = 'eng';
 // =============================================================
 //
 //
@@ -80,8 +80,8 @@ function loadNextQuestion(e) {
 }
 function onAnswerClick(e) {
   let answerElem = phrasesRefs.form.querySelector('input:checked');
+  resetStyle();
   showAnswer(answerElem?.value ?? 0);
-  //resetStyles();
 }
 // =============================================================
 //
@@ -137,15 +137,16 @@ function getRand(non, min, max) {
 
 function showAnswer(index) {
   let answerListElem = phrasesRefs.form.querySelectorAll('p');
+  if (answerListElem) {
+    answerListElem[index].classList.add('wrong');
 
-  answerListElem[index].classList.add('wrong');
+    let question = PHRASES[CURRENT_INDEX_PHRASES];
 
-  let question = PHRASES[CURRENT_INDEX_PHRASES];
-
-  for (let i = 0; i < 3; i++) {
-    if (answerListElem[i].children[1].textContent === question[SECOND_LANG]) {
-      answerListElem[i].closest('p').classList.remove('wrong');
-      answerListElem[i].closest('p').classList.add('right');
+    for (let i = 0; i < 3; i++) {
+      if (answerListElem[i].children[1].textContent === question[SECOND_LANG]) {
+        answerListElem[i].closest('p').classList.remove('wrong');
+        answerListElem[i].closest('p').classList.add('right');
+      }
     }
   }
 }
@@ -161,7 +162,7 @@ function setStyleForSelect(moduleRef) {
       `[data-id=${CURRENT_INDEX_CATEGORY}]`
     );
 
-  moduleRef?.classList.add('selected');
+  moduleRef?.classList?.add('selected');
 }
 
 function setSpinner(flag = false) {
@@ -174,7 +175,14 @@ function setSpinner(flag = false) {
     document.body.classList.add('show');
   }
 }
-
+function resetStyle() {
+  let answerListElem = phrasesRefs.form.querySelectorAll('p');
+  for (let i = 0; i < 3; i++) {
+    answerListElem[i].closest('p').classList.remove('selected');
+    answerListElem[i].closest('p').classList.remove('wrong');
+    answerListElem[i].closest('p').classList.remove('right');
+  }
+}
 function activateButton() {
   if (CURRENT_INDEX_PHRASES > 0) {
     phrasesRefs.buttons[0].disabled = false;
