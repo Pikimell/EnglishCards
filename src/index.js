@@ -24,8 +24,8 @@ let CATEGORIES = [];
 let PHRASES = [];
 let CURRENT_INDEX_PHRASES;
 let CURRENT_INDEX_CATEGORY;
-let BASE_LANG = 'rus';
-let SECOND_LANG = 'eng';
+let BASE_LANG = 'eng';
+let SECOND_LANG = 'rus';
 // =============================================================
 //
 //
