@@ -55,13 +55,24 @@
             height: 60px;
             background-color: rgba(226, 230, 252, 1);
             border-radius: 10px;
-
+            
             color: $primary;
             font-size: 24px;
             font-weight: 600;
             font: $font-stack;
             cursor: pointer;
+            
+            outline: none;
+            border: none;
+            box-shadow: 0px 0px 8px 3px rgba(34, 60, 80, 0.2);
 
+
+            &:disabled{
+                opacity: 0.5;
+                cursor:default;
+                border: none;
+                box-shadow: 0px 0px 8px 3px rgba(34, 60, 80, 0.2) inset;
+            }
         }
 
         &>*:nth-child(2){
@@ -122,6 +133,13 @@
             display: flex;
             align-items: center;
 
+        }
+
+        .wrong{
+            border: 1px solid #FF7979;
+        }
+        .right{
+            border: 2px solid #C6EAB0;
         }
     }
 }

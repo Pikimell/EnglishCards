@@ -1,4 +1,5 @@
 import AWS from 'aws-sdk';
+import uniqid from 'uniqid';
 import { ACCESS_KEY, SECRET_ACCESS_KEY } from '../consts';
 
 let awsConfig = {
@@ -70,6 +71,32 @@ export class DynamoAPI {
     return data.Items;
   }
 
+  static async getItems2(table, id, nameCollumn = 'id') {
+    let result, accumulated, ExclusiveStartKey;
+
+    do {
+      result = await docClient
+        .query({
+          TableName: table,
+          ExclusiveStartKey,
+          Limit: 10,
+          FilterExpression: `contains(${nameCollumn}, :${nameCollumn})`,
+          ExpressionAttributeValues: {
+            [':' + nameCollumn]: id,
+          },
+        })
+        .promise();
+
+      ExclusiveStartKey = result.LastEvaluatedKey;
+      accumulated = [...accumulated, ...result.Items];
+    } while (result.Items.length || result.LastEvaluatedKey);
+
+    console.log('------------------------------------------------------------');
+    console.log(accumulated);
+    console.log('------------------------------------------------------------');
+    return accumulated;
+  }
+
   static async getAllItems(table) {
     const params = {
       TableName: table,
@@ -77,6 +104,25 @@ export class DynamoAPI {
 
     let data = await docClient.scan(params).promise();
     return data.Items;
+  }
+
+  static async getAllItems2(table) {
+    let result, accumulated, ExclusiveStartKey;
+
+    do {
+      result = await docClient
+        .query({
+          TableName: table,
+          ExclusiveStartKey,
+          Limit: 100,
+        })
+        .promise();
+
+      ExclusiveStartKey = result.LastEvaluatedKey;
+      accumulated = [...accumulated, ...result.Items];
+    } while (result.Items.length || result.LastEvaluatedKey);
+
+    return accumulated;
   }
 
   static async deleteItem(table, id) {

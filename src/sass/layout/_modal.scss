@@ -1,8 +1,28 @@
+.show .backdrop-modal{
+    display: block;
+}
+
 .backdrop-modal{
     position: fixed;
     left: 0;
     top:0;
     width: 100vw;
     height: 100vw;
+    background: rgba(77, 90, 153, 0.2);
+    backdrop-filter: blur(10px);
     display: none;
+    padding: 0;
+}
+
+
+.spinner-container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:nth-child(1){
+        transform: scale(1.5);
+    }
 }

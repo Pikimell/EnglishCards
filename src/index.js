@@ -2,6 +2,7 @@
 import { getPhrases, getСategories } from './js/store/index';
 import categoriesTemlate from './templates/question-list.hbs';
 import phrasesTemplate from './templates/phrases-template.hbs';
+import _ from 'lodash';
 // =============================================================
 //
 //
@@ -16,18 +17,72 @@ const moduleRefs = {
 
 const phrasesRefs = {
   form: document.querySelector('.js-form-question'),
+  buttons: document.querySelectorAll('.js-question-footer input'),
 };
 
 let CATEGORIES = [];
 let PHRASES = [];
 let CURRENT_INDEX_PHRASES;
+let CURRENT_INDEX_CATEGORY;
+let BASE_LANG = 'eng';
+let SECOND_LANG = 'rus';
 // =============================================================
 //
 //
 //
 //
 // =====================  CALLBACKS  ===========================
+moduleRefs.moduleContainer.addEventListener('click', onModuleClick);
+moduleRefs.inputModuleElem.addEventListener(
+  'input',
+  _.debounce(onSearchModule, 500)
+);
+phrasesRefs.buttons[0].addEventListener('click', loadPreviousQuestion);
+phrasesRefs.buttons[1].addEventListener('click', onAnswerClick);
+phrasesRefs.buttons[2].addEventListener('click', loadNextQuestion);
 
+async function onModuleClick(e) {
+  if (e.target.nodeName !== 'UL') {
+    let target = e.target.closest('li');
+    CURRENT_INDEX_CATEGORY = target.dataset.id;
+    updateStyleSelectModule(target);
+
+    setSpinner(true);
+    PHRASES = await getPhrases(CURRENT_INDEX_CATEGORY);
+    console.log('hide');
+    setTimeout(() => {
+      setSpinner(false);
+    }, 1000);
+    CURRENT_INDEX_PHRASES = 0;
+    initPhrase();
+    activateButton();
+  }
+}
+
+async function onSearchModule(e) {
+  let value = moduleRefs.inputModuleElem.value;
+  let filteredArray = CATEGORIES.filter(obj => {
+    let title = obj.title;
+    return title.indexOf(value) >= 0;
+  });
+  renderCategories(filteredArray);
+}
+
+function loadPreviousQuestion(e) {
+  if (CURRENT_INDEX_PHRASES > 0) CURRENT_INDEX_PHRASES--;
+  initPhrase();
+  activateButton();
+}
+function loadNextQuestion(e) {
+  if (CURRENT_INDEX_PHRASES < PHRASES.length - 1) CURRENT_INDEX_PHRASES++;
+  initPhrase();
+  activateButton();
+}
+function onAnswerClick(e) {
+  let answerElem = phrasesRefs.form.querySelector('input:checked');
+  showAnswer(answerElem?.value ?? 0);
+  //resetStyles();
+}
 // =============================================================
 //
 //
@@ -36,29 +91,35 @@ let CURRENT_INDEX_PHRASES;
 // ========================  HELPERS  ==========================
 function renderCategories(filterCategories) {
   if (!filterCategories) filterCategories = CATEGORIES;
-  moduleRefs.moduleContainer = filterCategories;
+  filterCategories.sort((a, b) => a.title.localeCompare(b.title));
+  moduleRefs.moduleContainer.innerHTML = categoriesTemlate(filterCategories);
+  setStyleForSelect(CURRENT_INDEX_CATEGORY);
 }
 
-function renderPhrases() {}
+function renderPhrases(PHRASE) {
+  phrasesRefs.form.innerHTML = phrasesTemplate(PHRASE);
+}
 
-function initPhrase() {
-  let topic = PHRASES;
-  let question = topic[CURRENT_INDEX_PHRASES];
-  let randomNums = [];
-  let answerRand = getRand([], 0, 3);
+function initPhrase(index) {
+  if (PHRASES.length > 0) {
+    index = index ?? CURRENT_INDEX_PHRASES;
+    let topic = PHRASES;
+    let question = topic[index];
+    let randomNums = [];
+    let answerRand = getRand([], 0, 3);
 
-  for (let i = 0; i < 3; i++) {
-    let rand = getRand(
-      [CURRENT_INDEX_PHRASES, ...randomNums],
-      0,
-      topic.length - 1
-    );
-    randomNums.push(rand);
-    refs.answerListElem[i].textContent = topic[randomNums[i]][SECOND_LANG];
+    let PHARSE_OBJ = {};
+    for (let i = 0; i < 3; i++) {
+      let rand = getRand([index, ...randomNums], 0, topic.length - 1);
+      randomNums.push(rand);
+      PHARSE_OBJ[`rus${i + 1}`] = topic[randomNums[i]][SECOND_LANG];
+    }
+
+    PHARSE_OBJ[`rus${answerRand + 1}`] = question[SECOND_LANG];
+    PHARSE_OBJ.eng = question[BASE_LANG];
+
+    renderPhrases(PHARSE_OBJ);
   }
-
-  refs.answerListElem[answerRand].textContent = question[SECOND_LANG];
-  questionTitle.textContent = question[BASE_LANG];
 }
 
 function getRand(non, min, max) {
@@ -74,33 +135,57 @@ function getRand(non, min, max) {
   return rand;
 }
 
-function selectAnswer(index) {
-  for (let i = 0; i < 3; i++) {
-    refs.answerListElem[i].closest('p').classList.remove('selected');
-  }
-  refs.answerListElem[index].closest('p').classList.add('selected');
-  refs.answerListElem[index].previousElementSibling.checked = true;
-}
-
-function resetStyle() {
-  for (let i = 0; i < 3; i++) {
-    refs.answerListElem[i].closest('p').classList.remove('selected');
-    refs.answerListElem[i].closest('p').classList.remove('wrong');
-    refs.answerListElem[i].closest('p').classList.remove('right');
-    refs.answerListElem[i].previousElementSibling.checked = false;
-  }
-}
-
 function showAnswer(index) {
-  refs.answerListElem[index].closest('p').classList.add('wrong');
-  let topic = dictionary.get([...dictionary.keys()][indexTopic]);
-  let question = topic[indexQuestion];
+  let answerListElem = phrasesRefs.form.querySelectorAll('p');
+
+  answerListElem[index].classList.add('wrong');
+
+  let question = PHRASES[CURRENT_INDEX_PHRASES];
 
   for (let i = 0; i < 3; i++) {
-    if (refs.answerListElem[i].textContent === question.rus) {
-      refs.answerListElem[i].closest('p').classList.remove('wrong');
-      refs.answerListElem[i].closest('p').classList.add('right');
+    if (answerListElem[i].children[1].textContent === question[SECOND_LANG]) {
+      answerListElem[i].closest('p').classList.remove('wrong');
+      answerListElem[i].closest('p').classList.add('right');
     }
+  }
+}
+
+function updateStyleSelectModule(moduleRef) {
+  let oldRef = moduleRefs.moduleContainer.querySelector('.selected');
+  if (oldRef) oldRef.classList.remove('selected');
+  setStyleForSelect(moduleRef);
+}
+function setStyleForSelect(moduleRef) {
+  if (!moduleRef)
+    moduleRef = moduleRefs.moduleContainer.querySelector(
+      `[data-id=${CURRENT_INDEX_CATEGORY}]`
+    );
+
+  moduleRef?.classList.add('selected');
+}
+
+function setSpinner(flag = false) {
+  if (!flag) {
+    document.body.classList.remove('show');
+    setTimeout(() => {
+      setSpinner(false);
+    }, 10000);
+  } else {
+    document.body.classList.add('show');
+  }
+}
+
+function activateButton() {
+  if (CURRENT_INDEX_PHRASES > 0) {
+    phrasesRefs.buttons[0].disabled = false;
+  } else {
+    phrasesRefs.buttons[0].disabled = true;
+  }
+
+  if (CURRENT_INDEX_PHRASES < PHRASES.length - 1) {
+    phrasesRefs.buttons[2].disabled = false;
+  } else {
+    phrasesRefs.buttons[2].disabled = true;
   }
 }
 // toggle.addEventListener('change', e => {
@@ -112,12 +197,146 @@ function showAnswer(index) {
 //
 //
 // =========================   INIT   ==========================
-
 async function onLoadWindow() {
   CATEGORIES = await getСategories();
+  setSpinner(false);
   renderCategories(CATEGORIES);
 }
 
 onLoadWindow();
+
+// class MyData {
+//   static counter = 0;
+// }
+
+// async function onLoadTest() {
+//   MyData.counter = 0;
+//   CATEGORIES = await getСategories();
+//   renderCategories(CATEGORIES);
+//   let dataArray = JSON.parse(localStorage.getItem('dataArray'));
+//   let data = dataArray[0];
+//   localStorage.setItem('lastDataArray', JSON.stringify(data));
+//   let nameModule = data.key;
+//   let id = CATEGORIES.find(obj => obj.title === nameModule).id;
+
+//   let count = 0;
+//   for (let phr of data[nameModule]) {
+//     let myPhrases = {
+//       eng: '',
+//       rus: '',
+//       trans: '',
+//       idCategory: id,
+//       ...phr,
+//     };
+//     setTimeout(() => {
+//       DynamoAPI.createItem('english-test-phrases', myPhrases);
+//       console.log(MyData.counter++ + 1, data[nameModule].length, myPhrases);
+
+//       if (MyData.counter === data[nameModule].length) {
+//         console.log('----------START------------');
+//         setTimeout(onLoadTest, 6000);
+//       }
+//     }, count++ * 500);
+//   }
+//   // ====================
+//   console.log('\n\n\n------------------------------');
+//   console.log(id, nameModule, dataArray.length);
+//   console.log('------------------------------');
+//   dataArray.shift();
+//   localStorage.setItem('dataArray', JSON.stringify(dataArray));
+// }
+
+// const arrayCategory = [];
+// async function doubleTest() {
+//   CATEGORIES = await getСategories();
+//   renderCategories(CATEGORIES);
+//   for (let i = 0; i < CATEGORIES.length; i++) {
+//     setTimeout(async () => {
+//       let phrases = await getPhrases(CATEGORIES[i].id);
+//       let title = CATEGORIES[i].title;
+//       console.log(title, phrases.length, data[title].length);
+//       if (phrases.length !== data[title].length)
+//         arrayCategory.push(CATEGORIES[i]);
+//     }, i * 5000);
+//   }
+// }
+// //doubleTest();
+// let BEST_CATEGORIES;
+// const load1 = async () => {
+//   BEST_CATEGORIES = await getСategories();
+// };
+// load1();
+// async function doubleTest1() {
+//   let okArray = JSON.parse(localStorage.getItem('okArray') ?? '[]');
+//   let errArray = JSON.parse(localStorage.getItem('errArray') ?? '[]');
+//   let i = MyData.counter++;
+
+//   if (
+//     !okArray.includes(BEST_CATEGORIES[i].title) &&
+//     !errArray.includes(BEST_CATEGORIES[i].title)
+//   ) {
+//     let phrases = await getPhrases(BEST_CATEGORIES[i].id);
+//     let title = BEST_CATEGORIES[i].title;
+//     console.log(title, phrases.length, data[title].length);
+
+//     if (phrases.length !== data[title].length) {
+//       saveErrorWords(phrases, data[title], BEST_CATEGORIES[i].id);
+//       if (phrases.length > data[title].length) {
+//         errArray.push(BEST_CATEGORIES[i].title);
+//         localStorage.setItem('errArray', JSON.stringify(errArray));
+//       }
+//     } else {
+//       okArray.push(BEST_CATEGORIES[i].title);
+//       localStorage.setItem('okArray', JSON.stringify(okArray));
+//     }
+//   } else {
+//     if (!okArray.includes(BEST_CATEGORIES[i].title))
+//       console.log(`okArray -> ${BEST_CATEGORIES[i].title}`);
+//     else if (!errArray.map(v => v.title).includes(BEST_CATEGORIES[i].title))
+//       console.log(`okArray -> ${BEST_CATEGORIES[i].title}`);
+//     else {
+//       ('ERROR');
+//     }
+//   }
+// }
+
+// let flag = false;
+// async function saveErrorWords(dbWords, AllWords, idCategory) {
+//   console.log(dbWords, AllWords);
+//   let onlyEng = dbWords.map(w => w.eng);
+//   const filterArr = AllWords.filter(word => {
+//     return !onlyEng.includes(word.eng);
+//   });
+
+//   for (let i = 0; i < filterArr.length; i++) {
+//     if (i === 0) flag = true;
+//     setTimeout(() => {
+//       const myPhrases = {
+//         eng: '',
+//         rus: '',
+//         trans: '',
+//         idCategory,
+//         ...filterArr[i],
+//       };
+
+//       console.log(
+//         'Created -> ',
+//         DynamoAPI.createItem('english-test-phrases', myPhrases)
+//       );
+//       if (i === filterArr.length - 1) flag = false;
+//     }, i * 1000);
+//   }
+//   console.log('end');
+// }
+
+// window.addEventListener('keydown', async e => {
+//   if (e.code === 'KeyQ') {
+//     localStorage.setItem('array', JSON.stringify(arrayCategory));
+//   } else if (e.code === 'KeyW' && !flag) {
+//     doubleTest1();
+//   } else {
+//     console.log('WAIT');
+//   }
+// });
 
 // =============================================================
