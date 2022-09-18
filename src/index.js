@@ -2,7 +2,7 @@
 import { getPhrases, getСategories } from './js/store/index';
 import categoriesTemlate from './templates/question-list.hbs';
 import phrasesTemplate from './templates/phrases-template.hbs';
-import _ from 'lodash';
+import _, { get } from 'lodash';
 // =============================================================
 //
 //
@@ -49,7 +49,6 @@ async function onModuleClick(e) {
 
     setSpinner(true);
     PHRASES = await getPhrases(CURRENT_INDEX_CATEGORY);
-    console.log('hide');
     setTimeout(() => {
       setSpinner(false);
     }, 1000);
@@ -217,43 +216,6 @@ onLoadWindow();
 //   static counter = 0;
 // }
 
-// async function onLoadTest() {
-//   MyData.counter = 0;
-//   CATEGORIES = await getСategories();
-//   renderCategories(CATEGORIES);
-//   let dataArray = JSON.parse(localStorage.getItem('dataArray'));
-//   let data = dataArray[0];
-//   localStorage.setItem('lastDataArray', JSON.stringify(data));
-//   let nameModule = data.key;
-//   let id = CATEGORIES.find(obj => obj.title === nameModule).id;
-
-//   let count = 0;
-//   for (let phr of data[nameModule]) {
-//     let myPhrases = {
-//       eng: '',
-//       rus: '',
-//       trans: '',
-//       idCategory: id,
-//       ...phr,
-//     };
-//     setTimeout(() => {
-//       DynamoAPI.createItem('english-test-phrases', myPhrases);
-//       console.log(MyData.counter++ + 1, data[nameModule].length, myPhrases);
-
-//       if (MyData.counter === data[nameModule].length) {
-//         console.log('----------START------------');
-//         setTimeout(onLoadTest, 6000);
-//       }
-//     }, count++ * 500);
-//   }
-//   // ====================
-//   console.log('\n\n\n------------------------------');
-//   console.log(id, nameModule, dataArray.length);
-//   console.log('------------------------------');
-//   dataArray.shift();
-//   localStorage.setItem('dataArray', JSON.stringify(dataArray));
-// }
-
 // const arrayCategory = [];
 // async function doubleTest() {
 //   CATEGORIES = await getСategories();
@@ -336,15 +298,48 @@ onLoadWindow();
 //   }
 //   console.log('end');
 // }
+//["lesson9","Speech","Fear","Traveling","Mail","Phone","Shopping","Beach"]
+import data from './js/store/testData';
+import { DynamoAPI } from './js/store/dynamo';
+async function deleteWords() {
+  let errArray = JSON.parse(localStorage.getItem('errArray'));
+  localStorage.setItem('lastDataArray', JSON.stringify(errArray[0]));
+  let nameModule = errArray[0];
+  let id = CATEGORIES.find(obj => obj.title === nameModule).id;
+  const dbPhrases = await getPhrases(id);
+  let trueLengt = data[nameModule].length;
+  let falseLength = dbPhrases.length;
 
-// window.addEventListener('keydown', async e => {
-//   if (e.code === 'KeyQ') {
-//     localStorage.setItem('array', JSON.stringify(arrayCategory));
-//   } else if (e.code === 'KeyW' && !flag) {
-//     doubleTest1();
-//   } else {
-//     console.log('WAIT');
-//   }
-// });
+  let filteredArray = getFilteredArray(dbPhrases);
+  console.log(id, trueLengt, falseLength, filteredArray);
+
+  let count = 1;
+  for (let wordId of filteredArray) {
+    setTimeout(() => {
+      let test = count;
+      console.log(test);
+      DynamoAPI.deleteItem('english-test-phrases', wordId);
+    }, count++ * 1000);
+  }
+  errArray.shift();
+  localStorage.setItem('errArray', JSON.stringify(errArray));
+}
+
+function getFilteredArray(array) {
+  let map = new Map();
+  let result = [];
+  for (let elem of array) {
+    if (!map.has(elem.eng)) map.set(elem.eng, elem);
+    else {
+      result.push(elem.id);
+    }
+  }
+  return result;
+}
+window.addEventListener('keydown', async e => {
+  if (e.code === 'KeyQ') {
+    deleteWords();
+  }
+});
 
 // =============================================================

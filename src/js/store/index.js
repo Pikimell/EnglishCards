@@ -3,7 +3,7 @@ import { DynamoAPI } from './dynamo';
 export async function getСategories() {
   const table = 'english-test-categories';
   try {
-    const listModules = await DynamoAPI.getAllItems(table);
+    const listModules = await DynamoAPI.getAllItems2(table);
     return listModules;
   } catch (err) {
     console.log(err);

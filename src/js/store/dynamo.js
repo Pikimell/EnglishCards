@@ -72,28 +72,29 @@ export class DynamoAPI {
   }
 
   static async getItems2(table, id, nameCollumn = 'id') {
-    let result, accumulated, ExclusiveStartKey;
-
+    let result,
+      accumulated = [],
+      ExclusiveStartKey;
+    let countScannedWord = 0;
     do {
       result = await docClient
-        .query({
+        .scan({
           TableName: table,
           ExclusiveStartKey,
-          Limit: 10,
+          Limit: 1000,
           FilterExpression: `contains(${nameCollumn}, :${nameCollumn})`,
           ExpressionAttributeValues: {
             [':' + nameCollumn]: id,
           },
         })
         .promise();
-
+      countScannedWord += 1000;
       ExclusiveStartKey = result.LastEvaluatedKey;
       accumulated = [...accumulated, ...result.Items];
-    } while (result.Items.length || result.LastEvaluatedKey);
-
-    console.log('------------------------------------------------------------');
-    console.log(accumulated);
-    console.log('------------------------------------------------------------');
+    } while (
+      (result.Items.length || result.LastEvaluatedKey) &&
+      countScannedWord < 5000
+    );
     return accumulated;
   }
 
@@ -107,20 +108,22 @@ export class DynamoAPI {
   }
 
   static async getAllItems2(table) {
-    let result, accumulated, ExclusiveStartKey;
+    let result,
+      accumulated = [],
+      ExclusiveStartKey;
 
     do {
       result = await docClient
-        .query({
+        .scan({
           TableName: table,
+          Limit: 50,
           ExclusiveStartKey,
-          Limit: 100,
         })
         .promise();
 
       ExclusiveStartKey = result.LastEvaluatedKey;
       accumulated = [...accumulated, ...result.Items];
-    } while (result.Items.length || result.LastEvaluatedKey);
+    } while (result.Items.length && result.LastEvaluatedKey);
 
     return accumulated;
   }
