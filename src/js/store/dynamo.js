@@ -43,7 +43,7 @@ export class DynamoAPI {
       ExpressionAttributeValues: updateData[1],
     };
 
-    docClient.update(params, (err, data) => {
+    await docClient.update(params, (err, data) => {
       console.log(err, data);
     });
   }
@@ -90,10 +90,6 @@ export class DynamoAPI {
       ExclusiveStartKey = result.LastEvaluatedKey;
       accumulated = [...accumulated, ...result.Items];
     } while (result.Items.length || result.LastEvaluatedKey);
-
-    console.log('------------------------------------------------------------');
-    console.log(accumulated);
-    console.log('------------------------------------------------------------');
     return accumulated;
   }
 

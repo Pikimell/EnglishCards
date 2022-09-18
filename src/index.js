@@ -3,6 +3,7 @@ import { getPhrases, getСategories } from './js/store/index';
 import categoriesTemlate from './templates/question-list.hbs';
 import phrasesTemplate from './templates/phrases-template.hbs';
 import _ from 'lodash';
+import { DynamoAPI } from './js/store/dynamo';
 // =============================================================
 //
 //
@@ -26,6 +27,8 @@ let CURRENT_INDEX_PHRASES;
 let CURRENT_INDEX_CATEGORY;
 let BASE_LANG = 'eng';
 let SECOND_LANG = 'rus';
+// let BASE_LANG = 'rus';
+// let SECOND_LANG = 'eng';
 // =============================================================
 //
 //
@@ -213,4 +216,37 @@ async function onLoadWindow() {
 
 onLoadWindow();
 
+function normalize(word) {
+  let flag = false;
+  if (word.eng.indexOf('🇺🇸 ') === 0) {
+    word.eng = word.eng.slice(4);
+    flag = true;
+  }
+
+  if (word.rus.includes('[')) {
+    [word.rus, word.trans] = [word.trans, word.rus];
+    flag = true;
+  }
+
+  word.eng = word.eng.replace('**', '');
+  return flag;
+}
+
+async function allNormalize() {
+  let count = 0;
+  for (let elem of PHRASES) {
+    setTimeout(() => {
+      if (normalize(elem)) {
+        let newElem = {
+          ...elem,
+        };
+        delete newElem.id;
+        console.log(newElem);
+        DynamoAPI.updateItem('english-test-phrases', elem.id, newElem);
+      } else {
+        console.log('NORM ->', elem.id);
+      }
+    }, count++ * 200);
+  }
+}
 // =============================================================
