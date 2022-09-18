@@ -5,7 +5,9 @@
   "scripts": {
     "start": "parcel src/*.html",
     "build": "parcel build src/*.html --public-url /EnglishCards/",
-    "push": "git add . && git commit -m 'update' && git push"
+    "push": "git add . && git commit -m 'update' && git push",
+    "main": "git add . && git commit -m 'stash' && git checkout main",
+    "dev": "git add . && git commit -m 'stash' && git checkout dev"
   },
   "repository": {
     "type": "git",
