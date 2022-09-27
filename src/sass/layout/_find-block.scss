@@ -4,19 +4,45 @@
     min-width: 380px;
     padding-top: 40px;
 
+
+    &::-webkit-scrollbar {
+        width: 0px;
+    }
+
+
+    @media (max-width:$max-width-screen) {
+        min-width: 0;
+        margin: 10px;
+        padding: 0;
+        height: fit-content;
+        min-height: 120px;
+        max-height: 700px;
+        width: 330px;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        &.minimize-list{
+
+        }
+    }
+
     & .find-input{
         height: 60px;
         position:relative;
-        min-width: 360px;
         width: 80%;
         align-items: center;
         background-color: #fff;
         border-radius: 10px;
 
+        @media (max-width:$max-width-screen) {
+            min-width: none;
+            width: 330px;
+            height: 40px;
+        }
+
         & input{
             height: 100%;
             padding-left: 65px;
-
             background-color: transparent;
             border: none;
 
@@ -31,6 +57,13 @@
                 outline: none;
                 border: none;
             }
+
+            @media (max-width:$max-width-screen) {
+                font-size: 14px;
+                font-weight: 500;
+                padding-left: 38px;
+                width: 95%;
+            }
         }
 
         & object{
@@ -40,7 +73,12 @@
             width: 24px;
             height: 24px;
             padding: 0;
-            margin: 18px 20px;
+            margin: 13px 13px;
+
+            @media (max-width:$max-width-screen) {
+                width: 14px;
+                height: 14px;
+            }
         }
     }
 
@@ -50,6 +88,15 @@
         margin-top: 40px;
         padding: 0;
         overflow-y: auto;
+        overflow-x: hidden;
+
+        @media (max-width:$max-width-screen) {
+            margin-top: 10px;
+            width: 330px;
+            min-height: 60px;
+            height: fit-content;
+            max-height: 704px;
+        }
 
         & .list-item{
             box-sizing: border-box;
@@ -68,12 +115,13 @@
             font-size: 20px;
             color: $dark-color;
 
-            
+            @media (max-width:$max-width-screen) {
+                width: 330px;
+                font-size: 14px;
+            }
 
             &.selected{
                 background-color: $primary-background;
-                font-weight: 500;
-                font-size: 20px;
                 color: $light-color;
             }
 

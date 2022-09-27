@@ -1,8 +1,10 @@
+@import "./utils/variables";
+
 @import './base/common';
 @import './base/fonts';
 @import "~bootstrap/scss/bootstrap";
 
-@import "./utils/variables";
+
 @import "./utils/components";
 
 @import "./layout/question.scss";
@@ -14,7 +16,9 @@
 body {
     overflow: hidden;
     background-color: $primary-background;
-    background:$background-gradient;
+    background: $background-gradient;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     width: 100vw;
     height: 100vh;
     padding: 0;
@@ -23,6 +27,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media (max-width:$max-width-screen) {
+        padding-top: 40px;
+        align-items: flex-start;
+    }
 }
 body> .base-container{
     display: flex;
@@ -36,6 +45,18 @@ body> .base-container{
     background: #ffffff6c;
     backdrop-filter: blur(20px);
     border-radius: 30px;
+
+    @media (max-width: $max-width-screen) {
+        min-width: 350px;
+        width: 350px ;
+        height: 704px;
+        margin: 0;
+        padding: 0;
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 10px;
+    }
 }
 
 .base-card{
